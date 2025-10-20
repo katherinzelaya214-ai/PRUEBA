@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hoteles Destacados de Honduras</title>
+<style>
+  body {
+    font-family: Playfair Display, sans-serif;
+    background: linear-gradient(135deg, #002f4b, #005f99);
+    margin: 0;
+    color: white;
+  }
+  header {
+    background: rgba(0,0,0,0.5);
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+  }
+  header h1 {
+    color: gold;
+    font-weight: bold;
+    font-size: 28px;
+    margin: 0;
+  }
+  #logo {
+    height: 60px;
+    width: auto;
+  }
+  .hotel-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+  }
+  .hotel-card {
+    background: rgba(255,255,255,0.1);
+    border-radius: 15px;
+    padding: 10px;
+    transition: transform 0.3s, background 0.3s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  }
+  .hotel-card:hover {
+    transform: scale(1.03);
+    background: rgba(255,255,255,0.15);
+  }
+  .hotel-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  .hotel-card h3 {
+    margin: 10px 0 0 0;
+    color: gold;
+  }
+  button {
+    background: gold;
+    border: none;
+    color: black;
+    padding: 8px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: bold;
+    transition: background 0.3s;
+  }
+  button:hover {
+    background: #ffcc00;
+  }
+  .pagina {
+    display: none;
+    padding: 20px;
+    text-align: center;
+  }
+  .galeria {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+  }
+  .galeria img {
+    width: 250px;
+    height: 160px;
+    border-radius: 10px;
+    object-fit: cover;
+  }
+  .mapa iframe {
+    width: 80%;
+    height: 300px;
+    border-radius: 10px;
+    border: none;
+    margin-top: 20px;
+  }
+  .volver {
+    display: inline-block;
+    margin-top: 20px;
+    color: white;
+    text-decoration: none;
+    background: crimson;
+    padding: 10px 15px;
+    border-radius: 10px;
+  }
+  form {
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 15px;
+    max-width: 500px;
+    margin: 20px auto;
+    text-align: left;
+  }
+  label {
+    display: block;
+    margin-bottom: 5px;
+    color: gold;
+  }
+  input, select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    margin-bottom: 10px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Cadena De Hoteles R&E Madrid</h1>
+  <img id="logo" src="agendatelefonica/agendatelefonica/logo.jpg" alt="Logo" />
+</header>
+
+<!-- Página principal -->
+<div id="main-page" class="hotel-container"></div>
+
+<!-- Página de detalles -->
+<div id="hotel-detalle" class="pagina"></div>
+
+<!-- Página de formulario -->
+<div id="formulario" class="pagina">
+  <h2>Formulario de Reserva</h2>
+  <form onsubmit="confirmarReserva(event)">
+    <label>Hotel seleccionado:</label>
+    <input type="text" id="hotelSeleccionado" readonly />
+
+    <label>Nombre completo:</label>
+    <input type="text" required />
+
+    <label>Teléfono:</label>
+    <input type="tel" required />
+
+    <label>Fecha de entrada:</label>
+    <input type="date" required />
+
+    <label>Fecha de salida:</label>
+    <input type="date" required />
+
+    <label>Número de personas:</label>
+    <input type="number" min="1" required />
+
+    <button type="submit">Confirmar Reserva</button>
+  </form>
+  <a href="#" class="volver" onclick="volver()">← Volver</a>
+</div>
+
+<script>
+const hoteles = {
+  "Kimpton Grand Roatán Resort & Spa": {
+    imagenPrincipal: "./agendatelefonica/hotelroatan.jpg",
+    galeria: [
+      "./agendatelefonica/cpmedorroatan.jpg",
+      "./agendatelefonica/vista.jpg",
+      "./agendatelefonica/habitacionroa.jpg",
+      "./agendatelefonica/pisinaroatan.jpg"
+    ],
+    mapa: "https://www.google.com/maps?q=Kimpton+Grand+Roatan+Resort+%26+Spa&output=embed"
+  },
+  "InterContinental Tegucigalpa": {
+    imagenPrincipal: "./agendatelefonica/tegus.jpg",
+    galeria: [
+      "./agendatelefonica/comedortegus.jpg",
+      "./agendatelefonica/vistategu.jpg",
+      "./agendatelefonica/habitategu.jpg",
+      "./agendatelefonica/teguspicina.jpg"
+    ],
+    mapa: "https://www.google.com/maps?q=InterContinental+Tegucigalpa&output=embed"
+  },
+  "The Lodge & Spa at Pico Bonito": {
+    imagenPrincipal: "./agendatelefonica/picobonito.jpg",
+    galeria: [
+      "./agendatelefonica/picocomedor.jpg",
+      "./agendatelefonica/vistapico.jpg",
+      "./agendatelefonica/picohabitacion.jpg",
+      "./agendatelefonica/picopicina.jpg"
+    ],
+    mapa: "https://www.google.com/maps?q=The+Lodge+%26+Spa+at+Pico+Bonito&output=embed"
+  },
+  "Hotel Ciudad Ruinas": {
+    imagenPrincipal: "./agendatelefonica/blancahotel.jpg",
+    galeria: [
+      "./agendatelefonica/blancacomedor.jpg",
+      "./agendatelefonica/blancavista.jpg",
+      "./agendatelefonica/blancahabitacion.jpg",
+      "./agendatelefonica/blancapicina.jpg"
+    ],
+    mapa: "https://www.google.com/maps?q=Hotel+Copan+Ruinas&output=embed"
+  },
+  "Aloft San Pedro Sula": {
+    imagenPrincipal: "./agendatelefonica/sanhotel.jpg",
+    galeria: [
+      "./agendatelefonica/sancomedor.jpg",
+      "./agendatelefonica/sanvista.jpg",
+      "./agendatelefonica/sanhabitacion.jpg",
+      "./agendatelefonica/sanpisina.jpg"
+    ],
+    mapa: "https://www.google.com/maps?q=Aloft+San+Pedro+Sula&output=embed"
+  },
+  "Cedrela": {
+    imagenPrincipal: "./agendatelefonica/cadrelahotel.jpg",
+    galeria: [
+      "./agendatelefonica/cadrelacomedor.jpg",
+      "./agendatelefonica/visacadrela.jpg",
+      "./agendatelefonica/habitacioncadrela.jpg",
+      "./agendatelefonica/600247031.jpg"
+    ],
+    mapa: "https://www.google.com/maps?q=Hotel+Cedrela+Comayagua&output=embed"
+  }
+};
+
+// Generar tarjetas de hoteles
+const contenedor = document.getElementById("main-page");
+Object.keys(hoteles).forEach(nombre => {
+  const h = hoteles[nombre];
+  contenedor.innerHTML += `
+    <div class="hotel-card">
+      <img src="${h.imagenPrincipal}" alt="${nombre}" />
+      <h3>${nombre}</h3>
+      <button onclick="verHotel('${nombre}')">Ver más</button>
+    </div>
+  `;
+});
+
+function verHotel(nombre) {
+  const h = hoteles[nombre];
+  document.getElementById("main-page").style.display = "none";
+  const detalle = document.getElementById("hotel-detalle");
+  detalle.innerHTML = `
+    <h2>${nombre}</h2>
+    <div class="galeria">
+      ${h.galeria.map(img => `<img src="${img}" alt="Foto de ${nombre}" />`).join("")}
+    </div>
+    <div class="mapa">
+      <iframe src="${h.mapa}" loading="lazy"></iframe>
+    </div>
+    <button onclick="abrirFormulario('${nombre}')">Reservar</button>
+    <a href="#" class="volver" onclick="volver()">← Volver</a>
+  `;
+  detalle.style.display = "block";
+}
+
+function abrirFormulario(nombre) {
+  document.querySelectorAll(".pagina").forEach(p => p.style.display = "none");
+  document.getElementById("formulario").style.display = "block";
+  document.getElementById("hotelSeleccionado").value = nombre;
+}
+
+function volver() {
+  document.querySelectorAll(".pagina").forEach(p => p.style.display = "none");
+  document.getElementById("main-page").style.display = "grid";
+}
+
+function confirmarReserva(e) {
+  e.preventDefault();
+  alert("✅ ¡Reserva confirmada con éxito!");
+  volver();
+}
+</script>
+
+</body>
+</html>
